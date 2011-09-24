@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "macros.h"
+#include "Controller.h"
 
 void initWindowStuff()
 {
@@ -41,11 +42,12 @@ void setCallbacks()
 void initOpenGL()
 {
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0.7f,0.7f,1.f,1.f);
+    glClearColor(0.f,0.f,0.f,1.f);
 }
 
 void cleanUp()
 {
+    delete CONTROL::CONTROLLER;
     glfwTerminate();
 }
 
@@ -55,6 +57,8 @@ int main()
     setCallbacks();
     initOpenGL();
     handleResize(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    CONTROL::CONTROLLER->run();
 
     cleanUp();
     exit(EXIT_SUCCESS);
