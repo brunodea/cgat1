@@ -1,4 +1,5 @@
 vc10/ipch
+vc10/Debug
 *.opensdf
 *.sdf
 bin/
