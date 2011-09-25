@@ -19,6 +19,7 @@ void initWindowStuff()
 
 void GLFWCALL onKeyPressed(int key, int state)
 {
+    CONTROL::CONTROLLER->onKeyPressed(key, state);
 }
 
 void GLFWCALL handleResize(int width, int height)

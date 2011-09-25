@@ -10,6 +10,8 @@ namespace CONTROL
         static Controller *instance();
 
         void run();
+        void onKeyPressed(int key, int state);
+
     private:
         Controller();
 

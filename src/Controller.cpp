@@ -60,3 +60,7 @@ void Controller::onUpdate()
     if(glfwGetKey(GLFW_KEY_ESC) == GLFW_PRESS)
         m_bRunning = false;
 }
+
+void Controller::onKeyPressed(int key, int state)
+{
+}

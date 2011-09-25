@@ -5,5 +5,6 @@
 #define WINDOW_HEIGHT 600
 
 #define CONTROLLER Controller::instance()
+#define PI 3.141592653589
 
 #endif
