@@ -4,3 +4,4 @@ vc10/Debug
 *.sdf
 bin/
 resources/
+*.suo
