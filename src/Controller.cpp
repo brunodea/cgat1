@@ -10,8 +10,8 @@ using namespace CONTROL;
 Controller *Controller::m_sInstance = NULL;
 
 Controller::Controller()
-    : m_bRunning(true), m_Cols(100), m_Rows(100),
-    m_FreeCamera(math::vector3f(0,200,300),math::vector3f(300,0,0),math::vector3f(0,1,0))
+    : m_bRunning(true), m_Cols(128), m_Rows(128), m_detail(2),
+      m_FreeCamera(math::vector3f(0,400,1400),math::vector3f(600,0,0),math::vector3f(0,1,0))
 {
     util::HeightMap h(util::HeightMap("resources/hmap.tga",MAX_ALT,m_Cols,m_Rows));
     h.setOffsets(30,30);
@@ -68,34 +68,46 @@ void Controller::onRender()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    rotateCamera();
+    //rotateCamera();
     gluLookAt(eye[0],eye[1],eye[2], target[0],target[1],target[2], up[0],up[1],up[2]);
 
     if(m_HeightMapVectors->size() > 0)
     {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glScalef(.3,.3,.3);
-        for(int i = 0; i < m_Rows-1; i++)
+        
+        glBegin(GL_TRIANGLES);
+        for(int i = 0; i <= m_Rows-m_detail; i += m_detail-1)
         {
-            glBegin(GL_LINE_STRIP);
-                    for(int j = 0; j < m_Cols-1; j++)
-                    {
-                        math::Vector3 v1 = m_HeightMapVectors->at((i*m_Cols)+j);
-                        glColor4f(1.f,v1[1]/MAX_ALT,0.f,1.f);
-                            glVertex3f(v1[0],v1[1],v1[2]);
-                    }
-            glEnd();
+            for(int j = 0; j <= m_Cols-m_detail; j += m_detail-1)
+            {
+                math::Vector3 v1 = m_HeightMapVectors->at((i*m_Cols)+j);
+				math::Vector3 v2 = m_HeightMapVectors->at(((i+m_detail-1)*m_Cols)+j);
+				math::Vector3 v3 = m_HeightMapVectors->at(((i+m_detail-1)*m_Cols)+j+m_detail-1);
+				math::Vector3 v4 = m_HeightMapVectors->at((i*m_Cols)+j+m_detail-1);
+
+                glColor4f(1.f,(v1[1]+v2[1]+v3[1])/(MAX_ALT*3),0.f,1.f);
+                glVertex3f(v1[0],v1[1],v1[2]);
+				glVertex3f(v2[0],v2[1],v2[2]);
+				glVertex3f(v3[0],v3[1],v3[2]);
+                        
+                glColor4f(1.f,(v1[1]+v4[1]+v3[1])/(MAX_ALT*3),0.f,1.f);
+                glVertex3f(v1[0],v1[1],v1[2]);
+                glVertex3f(v4[0],v4[1],v4[2]);
+				glVertex3f(v3[0],v3[1],v3[2]);
+                
+    //            glColor4f(1.f,(v1[1]+v2[1]+v3[1])/(MAX_ALT*3),0.f,1.f);
+    //            glVertex3f(v1[0]*m_detail,v1[1],v1[2]*m_detail);
+				//glVertex3f(v2[0]*m_detail,v2[1],v2[2]*m_detail);
+				//glVertex3f(v3[0]*m_detail,v3[1],v3[2]*m_detail);
+    //            
+    //            glColor4f(1.f,(v1[1]+v4[1]+v3[1])/(MAX_ALT*3),0.f,1.f);
+    //            glVertex3f(v1[0]*m_detail,v1[1],v1[2]*m_detail);
+    //            glVertex3f(v4[0]*m_detail,v4[1],v4[2]*m_detail);
+				//glVertex3f(v3[0]*m_detail,v3[1],v3[2]*m_detail);
+            }
         }
-        for(int j = 0; j < m_Cols-1; j++)
-        {
-            glBegin(GL_LINE_STRIP);
-                    for(int i = 0; i < m_Rows-1; i++)
-                    {
-                        math::Vector3 v1 = m_HeightMapVectors->at((i*m_Cols)+j);
-                        glColor4f(1.f,v1[1]/MAX_ALT,0.f,1.f);
-                        glVertex3f(v1[0],v1[1],v1[2]);
-                    }
-            glEnd();
-        }
+        glEnd();
     }
 }
 
@@ -112,6 +124,24 @@ void Controller::onUpdate()
 
 void Controller::onKeyPressed(int key, int state)
 {
+	if(state == GLFW_PRESS)
+	{
+		if(key == 'C')
+        {
+			m_detail *= 2;
+            if(m_detail > 128)
+                m_detail = 128;
+        }
+		if(key == 'V')
+        {
+            if(m_detail >= 2)
+            {
+			    m_detail /= 2;
+                if(m_detail < 2)
+                    m_detail = 2;
+            }
+        }
+	}
 }
 
 void Controller::cameraOnKeyPress()
