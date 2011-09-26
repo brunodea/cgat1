@@ -73,10 +73,17 @@
   <ItemGroup>
     <ClCompile Include="..\src\Controller.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\util\HeightMap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\Camera.hpp" />
     <ClInclude Include="..\include\Controller.h" />
     <ClInclude Include="..\include\macros.h" />
+    <ClInclude Include="..\include\math\math_aux.hpp" />
+    <ClInclude Include="..\include\math\Matrix.hpp" />
+    <ClInclude Include="..\include\math\matrix_functions.hpp" />
+    <ClInclude Include="..\include\math\Vector.hpp" />
+    <ClInclude Include="..\include\util\HeightMap.h" />
     <ClInclude Include="..\include\util\QuadTree.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

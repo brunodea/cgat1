@@ -12,21 +12,13 @@ namespace util
     {
     public:
         HeightMap();
-        HeightMap(std::string &file_name, int max_altitude, int min_altitude, int rows, int cols);
+        HeightMap(const char *file_name, int max_altitude, int rows, int cols);
 
         std::vector<math::Vector3> *vectors();
 
-        void setAltitudesLimit(int max_alt, int min_alt)
-        {
-            m_MaxAltitude = max_alt;
-            m_MinAltitude = min_alt;
-        }
         void setMaxAltitude(int max_alt) { m_MaxAltitude = max_alt; }
         int maxAltitude() { return m_MaxAltitude; }
-
-        void setMinAltitude(int min_alt) { m_MinAltitude = min_alt; }
-        int minAltitude() { return m_MinAltitude; }
-
+        
         void setGridSizes(int rows, int cols)
         {
             m_RowsNum = rows;
@@ -43,12 +35,11 @@ namespace util
     private:
         std::string m_filename;
         int m_MaxAltitude;
-        int m_MinAltitude;
 
         int m_ColsNum;
         int m_RowsNum;
 
-        GLFWimage *m_Image;
+        GLFWimage m_Image;
 
     }; //end of class HeightMap.
 } //end of namespace util.
