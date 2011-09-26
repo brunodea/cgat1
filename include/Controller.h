@@ -29,12 +29,8 @@ namespace CONTROL
         static Controller *m_sInstance;
 
         bool m_bRunning;
-        std::vector<math::Vector3> *m_HeightMapVectors;
-        int m_Cols;
-        int m_Rows;
-
-		int m_detail;
-
+        
+        util::HeightMap *m_HeightMap;
         Camera m_FreeCamera;
 
     }; //end of class Controller.

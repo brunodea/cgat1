@@ -11,10 +11,10 @@ namespace util
     class HeightMap
     {
     public:
-        HeightMap();
         HeightMap(const char *file_name, int max_altitude, int rows, int cols);
+        ~HeightMap();
 
-        std::vector<math::Vector3> *vectors();
+        void draw();
 
         void setMaxAltitude(int max_alt) { m_MaxAltitude = max_alt; }
         int maxAltitude() { return m_MaxAltitude; }
@@ -38,6 +38,25 @@ namespace util
             m_YOffset = y;
         }
 
+        std::vector<math::Vector3> *vertices() { return m_Vertices; }
+
+        void detailUp()
+        {
+            m_DetailLevel *= 2;
+            if(m_DetailLevel > m_ImageSize)
+                m_DetailLevel = m_ImageSize;
+        }
+
+        void detailDown()
+        {
+            m_DetailLevel /= 2;
+            if(m_DetailLevel < 2)
+                m_DetailLevel = 2;
+        }
+
+    private:
+        std::vector<math::Vector3> *vectors();
+
     private:
         std::string m_filename;
         int m_MaxAltitude;
@@ -48,7 +67,11 @@ namespace util
         float m_XOffset;
         float m_YOffset;
 
+        int m_DetailLevel;
+        int m_ImageSize;
+
         GLFWimage m_Image;
+        std::vector<math::Vector3> *m_Vertices;
 
     }; //end of class HeightMap.
 } //end of namespace util.

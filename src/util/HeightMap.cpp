@@ -2,16 +2,51 @@
 #include "math/Vector.hpp"
 #include <iostream>
 #include <cstdlib>
+#include "glfw.h"
 
 using namespace util;
 
-HeightMap::HeightMap()
-    : m_filename("none"), m_MaxAltitude(0), m_ColsNum(0), m_RowsNum(0), m_XOffset(10), m_YOffset(10)
-{}
-
 HeightMap::HeightMap(const char *filename, int max_altitude, int rows, int cols)
-    : m_filename(filename), m_MaxAltitude(max_altitude), m_ColsNum(cols), m_RowsNum(rows), m_XOffset(10), m_YOffset(10)
+    : m_filename(filename), m_MaxAltitude(max_altitude), m_ColsNum(cols), m_RowsNum(rows), 
+      m_XOffset(10), m_YOffset(10), m_DetailLevel(2), m_ImageSize(0)
 {
+    m_Vertices = vectors();
+}
+
+HeightMap::~HeightMap()
+{
+    delete m_Vertices;
+}
+
+void HeightMap::draw()
+{
+    if(m_Vertices->size() > 0)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        
+        glBegin(GL_TRIANGLES);
+        for(int i = 0; i <= m_RowsNum-m_DetailLevel; i += m_DetailLevel-1)
+        {
+            for(int j = 0; j <= m_ColsNum-m_DetailLevel; j += m_DetailLevel-1)
+            {
+                math::Vector3 v1 = m_Vertices->at((i*m_ColsNum)+j);
+			    math::Vector3 v2 = m_Vertices->at(((i+m_DetailLevel-1)*m_ColsNum)+j);
+			    math::Vector3 v3 = m_Vertices->at(((i+m_DetailLevel-1)*m_ColsNum)+j+m_DetailLevel-1);
+			    math::Vector3 v4 = m_Vertices->at((i*m_ColsNum)+j+m_DetailLevel-1);
+
+                glColor4f(1.f,(v1[1]+v2[1]+v3[1])/(m_MaxAltitude*3),0.f,1.f);
+                glVertex3f(v1[0],v1[1],v1[2]);
+			    glVertex3f(v2[0],v2[1],v2[2]);
+			    glVertex3f(v3[0],v3[1],v3[2]);
+                        
+                glColor4f(1.f,(v1[1]+v4[1]+v3[1])/(m_MaxAltitude*3),0.f,1.f);
+                glVertex3f(v1[0],v1[1],v1[2]);
+                glVertex3f(v4[0],v4[1],v4[2]);
+			    glVertex3f(v3[0],v3[1],v3[2]);
+            }
+        }
+        glEnd();
+    }
 }
 
 std::vector<math::Vector3> *HeightMap::vectors()
@@ -23,7 +58,7 @@ std::vector<math::Vector3> *HeightMap::vectors()
         float row_step = (float)m_Image.Height/m_RowsNum;
         int col = 0;
         int row = 0;
-
+        m_ImageSize = m_Image.Width;
         while(row < m_RowsNum)
         {
             col = 0;
