@@ -10,8 +10,8 @@ using namespace CONTROL;
 Controller *Controller::m_sInstance = NULL;
 
 Controller::Controller()
-    : m_bRunning(true), m_Cols(100), m_Rows(100),
-    m_FreeCamera(math::vector3f(0,200,300),math::vector3f(300,0,0),math::vector3f(0,1,0))
+    : m_bRunning(true), m_Cols(100), m_Rows(100), m_detail(1),
+      m_FreeCamera(math::vector3f(0,200,300),math::vector3f(300,0,0),math::vector3f(0,1,0))
 {
     util::HeightMap h(util::HeightMap("resources/h.tga",MAX_ALT,m_Cols,m_Rows));
     h.setOffsets(30,30);
@@ -75,20 +75,20 @@ void Controller::onRender()
     {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glScalef(.3,.3,.3);
-		int yspacing = 3;
-		int xspacing = 3;
-        for(int i = 0; i < m_Rows-1; i += yspacing)
+
+        for(int i = 0; i < m_Rows-m_detail; i += m_detail)
         {
             glBegin(GL_TRIANGLES);
-                    for(int j = 0; j < m_Cols-1; j += xspacing)
+                    for(int j = 0; j < m_Cols-m_detail; j += m_detail)
                     {
                         math::Vector3 v1 = m_HeightMapVectors->at((i*m_Cols)+j);
-						math::Vector3 v2 = m_HeightMapVectors->at(((i+yspacing)*m_Cols)+j);
-						math::Vector3 v3 = m_HeightMapVectors->at(((i+yspacing)*m_Cols)+j+xspacing);
-						math::Vector3 v4 = m_HeightMapVectors->at((i*m_Cols)+j+xspacing);
+						math::Vector3 v2 = m_HeightMapVectors->at(((i+m_detail)*m_Cols)+j);
+						math::Vector3 v3 = m_HeightMapVectors->at(((i+m_detail)*m_Cols)+j+m_detail);
+						math::Vector3 v4 = m_HeightMapVectors->at((i*m_Cols)+j+m_detail);
+
                         glColor4f(1.f,v1[1]/MAX_ALT,0.f,1.f);
-                        glVertex3f(v1[0],v1[1],v1[2]);
-						glVertex3f(v2[0],v2[1],v2[2]);
+                        glVertex3f(v1[0]*m_detail,v1[1],v1[2]*m_detail);
+						glVertex3f(v2[0]*m_detail,v2[1],v2[2]*m_detail);
 						glVertex3f(v3[0],v3[1],v3[2]);
 
                         glVertex3f(v1[0],v1[1],v1[2]);
@@ -113,6 +113,19 @@ void Controller::onUpdate()
 
 void Controller::onKeyPressed(int key, int state)
 {
+	if(state == GLFW_PRESS)
+	{
+		if(key == 'C')
+		{
+			m_xspacing++;
+			m_yspacing++;
+		}
+		if(key == 'V' && m_xspacing > 1 && m_yspacing > 1)
+		{
+			m_xspacing--;
+			m_yspacing--;
+		}
+	}
 }
 
 void Controller::cameraOnKeyPress()

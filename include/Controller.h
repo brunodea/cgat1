@@ -33,6 +33,8 @@ namespace CONTROL
         int m_Cols;
         int m_Rows;
 
+		int m_detail;
+
         Camera m_FreeCamera;
 
     }; //end of class Controller.
