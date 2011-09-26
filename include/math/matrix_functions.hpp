@@ -150,6 +150,27 @@ namespace math
         return res;
     }
 
+    inline Matrix3 rotateArb(float ang, float x, float y, float z)
+    {
+        Matrix3 res = identity<3>();
+        float c = cos(ang);
+        float s = sin(ang);
+
+        res.set((x*x*(1-c))+c,0,0);
+        res.set((x*y*(1-c))+(z*s),0,1);
+        res.set((x*y*(1-c))-(z*s),0,2);
+
+        res.set((x*y*(1-c))-(y*s),1,0);
+        res.set((y*y*(1-c))+c,1,1);
+        res.set((y*z*(1-c))+(x*s),1,2);
+
+        res.set((z*x*(1-c))+(y*s),2,0);
+        res.set((y*z*(1-c))-(x*s),2,1);
+        res.set((z*z*(1-c))+c,2,2);
+        
+        return res;
+    }
+
     template<unsigned int M>
     inline Matrix<float, M> scale(const Vector<float, M> &vec)
     {

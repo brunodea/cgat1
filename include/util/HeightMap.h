@@ -32,12 +32,21 @@ namespace util
 
         void setFilename(std::string &filename) { m_filename = filename; }
 
+        void setOffsets(float x, float y)
+        {
+            m_XOffset = x;
+            m_YOffset = y;
+        }
+
     private:
         std::string m_filename;
         int m_MaxAltitude;
 
         int m_ColsNum;
         int m_RowsNum;
+
+        float m_XOffset;
+        float m_YOffset;
 
         GLFWimage m_Image;
 

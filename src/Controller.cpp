@@ -5,15 +5,17 @@
 
 using namespace CONTROL;
 
-#define MAX_ALT 120.f
+#define MAX_ALT 300.f
 
 Controller *Controller::m_sInstance = NULL;
 
 Controller::Controller()
-    : m_bRunning(true), m_Cols(30), m_Rows(30),
-      m_FreeCamera(math::vector3f(0,200,-200),math::vector3f(180,0,0),math::vector3f(0,1,0))
+    : m_bRunning(true), m_Cols(100), m_Rows(100),
+    m_FreeCamera(math::vector3f(0,200,300),math::vector3f(300,0,0),math::vector3f(0,1,0))
 {
-    m_HeightMapVectors = util::HeightMap("resources/bola.tga",MAX_ALT,m_Cols,m_Rows).vectors();
+    util::HeightMap h(util::HeightMap("resources/hmap.tga",MAX_ALT,m_Cols,m_Rows));
+    h.setOffsets(30,30);
+    m_HeightMapVectors = h.vectors();
     m_FreeCamera.setSpeed(5.f);
 }
 
@@ -136,8 +138,8 @@ void Controller::rotateCamera()
     float roll = math::radToDegree(m_FreeCamera.getRollAngle());
     float yaw = math::radToDegree(m_FreeCamera.getYawAngle());
     float pitch = math::radToDegree(m_FreeCamera.getPitchAngle());
-
-    float angle = (float)PI/50.f;
+    
+    float angle = (float)PI/20.f;
     if(glfwGetKey('U') == GLFW_PRESS)
         m_FreeCamera.rotate(angle,0.f,0.f);
     else if(glfwGetKey('O') == GLFW_PRESS)

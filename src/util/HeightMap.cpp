@@ -6,11 +6,11 @@
 using namespace util;
 
 HeightMap::HeightMap()
-    : m_filename("none"), m_MaxAltitude(0), m_ColsNum(0), m_RowsNum(0)
+    : m_filename("none"), m_MaxAltitude(0), m_ColsNum(0), m_RowsNum(0), m_XOffset(10), m_YOffset(10)
 {}
 
 HeightMap::HeightMap(const char *filename, int max_altitude, int rows, int cols)
-    : m_filename(filename), m_MaxAltitude(max_altitude), m_ColsNum(cols), m_RowsNum(rows)
+    : m_filename(filename), m_MaxAltitude(max_altitude), m_ColsNum(cols), m_RowsNum(rows), m_XOffset(10), m_YOffset(10)
 {
 }
 
@@ -19,15 +19,11 @@ std::vector<math::Vector3> *HeightMap::vectors()
     std::vector<math::Vector3> *res = new std::vector<math::Vector3>();
     if(glfwReadImage(m_filename.c_str(), &m_Image, GLFW_NO_RESCALE_BIT |  GLFW_ORIGIN_UL_BIT) == GL_TRUE)
     {
-        //std::cout << "bytes per pixel: " << m_Image.BytesPerPixel << std::endl;
-
         float col_step = (float)m_Image.Width/m_ColsNum;
         float row_step = (float)m_Image.Height/m_RowsNum;
         int col = 0;
         int row = 0;
 
-        std::cout << "row_step: " << row_step << " col_step: " << col_step << std::endl;
-        std::cout << "Width: " << m_Image.Width << " Height: " << m_Image.Height << std::endl;
         while(row < m_RowsNum)
         {
             col = 0;
@@ -39,48 +35,39 @@ std::vector<math::Vector3> *HeightMap::vectors()
                 unsigned char r = m_Image.Data[v];
                 unsigned char g = m_Image.Data[v+1];
                 unsigned char b = m_Image.Data[v+2];
-                //int a = m_Image.Data[v+3];
-                
-                //std::cout << v << " ";
-                //if(r!=0||g!=0||b!=0)
-                //std::cout << "(" << r << "," << g << "," << b << "," << a << ") ";
 
-                float x = 10*col;
-                float y = (r+g+b)*m_MaxAltitude/(255*3.f); //255+255+255.
-                float z = 10*row;
+                float val = r+g+b;
+                int count = 1;
+                if(v > 3)
+                {
+                    r = m_Image.Data[v-4];
+                    g = m_Image.Data[v-3];
+                    b = m_Image.Data[v-2];
 
-                //std::cout << y << " ";
+                    val += r+g+b;
+                    count++;
+                }
+                if(v < m_Image.Width*m_Image.Height)
+                {
+                    r = m_Image.Data[v+4];
+                    g = m_Image.Data[v+5];
+                    b = m_Image.Data[v+6];
 
+                    val += r+g+b;                    
+                    count++;
+                }
+                val /= count;
+
+                float x = m_XOffset*col;
+                float y = (val)*m_MaxAltitude/(255*3.f); //255+255+255.
+                float z = m_YOffset*row;
                 res->push_back(math::vector3f(x,y,z));
 
                 col++;
             }
-            //std::cout << std::endl;
             row++;
         }
-
-
-        //for(int i = 0; i < m_Image.Height; i += 1)
-        //{
-        //    col = 0;
-        //    for(int j = 0; j < m_Image.Width; j += m_Image.BytesPerPixel)
-        //    {
-        //        int r = m_Image.Data[(i*m_Image.Width)+j];
-        //        int g = m_Image.Data[(i*m_Image.Width)+j+1];
-        //        int b = m_Image.Data[(i*m_Image.Width)+j+2];
-        //        int a = m_Image.Data[(i*m_Image.Width)+j+2];
-        //        
-        //        float x = 50*col;
-        //        float y = (r+g+b)*m_MaxAltitude/765.f; //255+255+255.
-        //        float z = 50*row;
-
-        //        res->push_back(math::vector3f(x,y,z));
-
-        //        col++;
-        //    }
-        //    row++;
-        //}
-
+        
         glfwFreeImage(&m_Image);
     }
     else
