@@ -11,7 +11,7 @@ namespace util
     class HeightMap
     {
     public:
-        HeightMap(const char *file_name, int max_altitude, int rows, int cols);
+        HeightMap(const char *file_name, int max_altitude);
         ~HeightMap();
 
         void draw();

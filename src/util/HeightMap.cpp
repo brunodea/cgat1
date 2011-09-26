@@ -6,8 +6,8 @@
 
 using namespace util;
 
-HeightMap::HeightMap(const char *filename, int max_altitude, int rows, int cols)
-    : m_filename(filename), m_MaxAltitude(max_altitude), m_ColsNum(cols), m_RowsNum(rows), 
+HeightMap::HeightMap(const char *filename, int max_altitude)
+    : m_filename(filename), m_MaxAltitude(max_altitude), m_ColsNum(0), m_RowsNum(0), 
       m_XOffset(10), m_YOffset(10), m_DetailLevel(2), m_ImageSize(0)
 {
     m_Vertices = vectors();
@@ -54,11 +54,13 @@ std::vector<math::Vector3> *HeightMap::vectors()
     std::vector<math::Vector3> *res = new std::vector<math::Vector3>();
     if(glfwReadImage(m_filename.c_str(), &m_Image, GLFW_NO_RESCALE_BIT |  GLFW_ORIGIN_UL_BIT) == GL_TRUE)
     {
+        m_ImageSize = m_Image.Width;
+        m_ColsNum = m_Image.Width;
+        m_RowsNum = m_Image.Height;
         float col_step = (float)m_Image.Width/m_ColsNum;
         float row_step = (float)m_Image.Height/m_RowsNum;
         int col = 0;
         int row = 0;
-        m_ImageSize = m_Image.Width;
         while(row < m_RowsNum)
         {
             col = 0;

@@ -5,7 +5,7 @@
 
 using namespace CONTROL;
 
-#define MAX_ALT 300.f
+#define MAX_ALT 600.f
 
 Controller *Controller::m_sInstance = NULL;
 
@@ -13,9 +13,9 @@ Controller::Controller()
     : m_bRunning(true),
       m_FreeCamera(math::vector3f(0,400,1400),math::vector3f(600,0,0),math::vector3f(0,1,0))
 {
-    m_HeightMap = new util::HeightMap("resources/hmap.tga",MAX_ALT,128,128);
+    m_HeightMap = new util::HeightMap("resources/xna.tga",MAX_ALT);
     m_HeightMap->setOffsets(30,30);
-    m_FreeCamera.setSpeed(5.f);
+    m_FreeCamera.setSpeed(20.f);
 }
 
 Controller::~Controller()
@@ -70,7 +70,6 @@ void Controller::onRender()
     //rotateCamera();
     gluLookAt(eye[0],eye[1],eye[2], target[0],target[1],target[2], up[0],up[1],up[2]);
 
-    //glScalef(.3,.3,.3);
     m_HeightMap->draw();
 }
 

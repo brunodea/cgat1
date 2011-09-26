@@ -28,7 +28,7 @@ void GLFWCALL handleResize(int width, int height)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    gluPerspective(45.f, (float)width/(float)height, 0.1, 5000);
+    gluPerspective(45.f, (float)width/(float)height, 0.1, 10000);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
