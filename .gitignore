@@ -3,3 +3,4 @@ vc10/Debug
 *.opensdf
 *.sdf
 bin/
+resources/
