@@ -68,22 +68,24 @@ void Controller::onRender()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    rotateCamera();
+    //rotateCamera();
     gluLookAt(eye[0],eye[1],eye[2], target[0],target[1],target[2], up[0],up[1],up[2]);
 
     if(m_HeightMapVectors->size() > 0)
     {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glScalef(.3,.3,.3);
-        for(int i = 0; i < m_Rows-1; i++)
+		int yspacing = 3;
+		int xspacing = 3;
+        for(int i = 0; i < m_Rows-1; i += yspacing)
         {
             glBegin(GL_TRIANGLES);
-                    for(int j = 0; j < m_Cols-1; j++)
+                    for(int j = 0; j < m_Cols-1; j += xspacing)
                     {
                         math::Vector3 v1 = m_HeightMapVectors->at((i*m_Cols)+j);
-						math::Vector3 v2 = m_HeightMapVectors->at(((i+1)*m_Cols)+j);
-						math::Vector3 v3 = m_HeightMapVectors->at(((i+1)*m_Cols)+j+1);
-						math::Vector3 v4 = m_HeightMapVectors->at((i*m_Cols)+j+1);
+						math::Vector3 v2 = m_HeightMapVectors->at(((i+yspacing)*m_Cols)+j);
+						math::Vector3 v3 = m_HeightMapVectors->at(((i+yspacing)*m_Cols)+j+xspacing);
+						math::Vector3 v4 = m_HeightMapVectors->at((i*m_Cols)+j+xspacing);
                         glColor4f(1.f,v1[1]/MAX_ALT,0.f,1.f);
                         glVertex3f(v1[0],v1[1],v1[2]);
 						glVertex3f(v2[0],v2[1],v2[2]);
