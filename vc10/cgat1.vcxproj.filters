@@ -22,6 +22,9 @@
     <Filter Include="Header Files\math">
       <UniqueIdentifier>{b7a9bc99-eda9-4b78-8a35-e7513d207b2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\util\quadtree">
+      <UniqueIdentifier>{a72ac64b-eb67-407b-b4bd-291b96f520f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp">
@@ -41,9 +44,6 @@
     <ClInclude Include="..\include\Controller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\util\QuadTree.hpp">
-      <Filter>Header Files\util</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\util\HeightMap.h">
       <Filter>Header Files\util</Filter>
     </ClInclude>
@@ -61,6 +61,12 @@
     </ClInclude>
     <ClInclude Include="..\include\Camera.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\util\QuadTree.hpp">
+      <Filter>Header Files\util\quadtree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\util\QuadNode.hpp">
+      <Filter>Header Files\util\quadtree</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

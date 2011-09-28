@@ -4,6 +4,7 @@
 #include "util/HeightMap.h"
 #include "math/matrix_functions.hpp"
 #include "Camera.hpp"
+#include "util/QuadTree.hpp"
 
 namespace CONTROL
 {
@@ -31,6 +32,7 @@ namespace CONTROL
         bool m_bRunning;
         
         util::HeightMap *m_HeightMap;
+        util::QuadTree *m_QuadTree;
         Camera m_FreeCamera;
 
     }; //end of class Controller.

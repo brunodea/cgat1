@@ -15,6 +15,8 @@ namespace util
         ~HeightMap();
 
         void draw();
+        void draw(int rowi, int coli, int rowf, int colf, int detail);
+        void draw(int row, int col);
 
         void setMaxAltitude(int max_alt) { m_MaxAltitude = max_alt; }
         int maxAltitude() { return m_MaxAltitude; }

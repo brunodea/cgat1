@@ -2,25 +2,26 @@
 #include "glfw.h"
 #include <vector>
 #include "math/matrix_functions.hpp"
+#include "macros.h"
 
 using namespace CONTROL;
-
-#define MAX_ALT 600.f
 
 Controller *Controller::m_sInstance = NULL;
 
 Controller::Controller()
     : m_bRunning(true),
-      m_FreeCamera(math::vector3f(0,400,1400),math::vector3f(600,0,0),math::vector3f(0,1,0))
+      m_FreeCamera(math::vector3f(0,400,400),math::vector3f(600,0,0),math::vector3f(0,1,0))
 {
-    m_HeightMap = new util::HeightMap("resources/xna.tga",MAX_ALT);
+    m_HeightMap = new util::HeightMap("resources/black.tga",MAX_ALT);
     m_HeightMap->setOffsets(30,30);
+    m_QuadTree = new util::QuadTree(m_HeightMap->vertices(), m_HeightMap->rows(), m_HeightMap->cols());
     m_FreeCamera.setSpeed(20.f);
 }
 
 Controller::~Controller()
 {
     delete m_HeightMap;
+    delete m_QuadTree;
 }
 
 Controller *Controller::instance()
@@ -70,7 +71,8 @@ void Controller::onRender()
     //rotateCamera();
     gluLookAt(eye[0],eye[1],eye[2], target[0],target[1],target[2], up[0],up[1],up[2]);
 
-    m_HeightMap->draw();
+    //m_HeightMap->draw(30,30);
+    m_QuadTree->draw();
 }
 
 
@@ -116,27 +118,27 @@ void Controller::cameraOnKeyPress()
 //com rotacao para a camera fica mto ruim de mexer.
 void Controller::rotateCamera()
 {
-    float roll = math::radToDegree(m_FreeCamera.getRollAngle());
-    float yaw = math::radToDegree(m_FreeCamera.getYawAngle());
-    float pitch = math::radToDegree(m_FreeCamera.getPitchAngle());
-    
-    float angle = (float)PI/20.f;
-    if(glfwGetKey('U') == GLFW_PRESS)
-        m_FreeCamera.rotate(angle,0.f,0.f);
-    else if(glfwGetKey('O') == GLFW_PRESS)
-        m_FreeCamera.rotate(-angle,0.f,0.f);
+    //float roll = math::radToDegree(m_FreeCamera.getRollAngle());
+    //float yaw = math::radToDegree(m_FreeCamera.getYawAngle());
+    //float pitch = math::radToDegree(m_FreeCamera.getPitchAngle());
+    //
+    //float angle = (float)PI/20.f;
+    //if(glfwGetKey('U') == GLFW_PRESS)
+    //    m_FreeCamera.rotate(angle,0.f,0.f);
+    //else if(glfwGetKey('O') == GLFW_PRESS)
+    //    m_FreeCamera.rotate(-angle,0.f,0.f);
 
-    if(glfwGetKey('L') == GLFW_PRESS)
-        m_FreeCamera.rotate(0.f,angle,0.f);
-    else if(glfwGetKey('J') == GLFW_PRESS)
-        m_FreeCamera.rotate(0.f,-angle,0.f);
+    //if(glfwGetKey('L') == GLFW_PRESS)
+    //    m_FreeCamera.rotate(0.f,angle,0.f);
+    //else if(glfwGetKey('J') == GLFW_PRESS)
+    //    m_FreeCamera.rotate(0.f,-angle,0.f);
 
-    if(glfwGetKey('I') == GLFW_PRESS)
-        m_FreeCamera.rotate(0.f,0.f,angle);
-    else if(glfwGetKey('K') == GLFW_PRESS)
-        m_FreeCamera.rotate(0.f,0.f,-angle);
+    //if(glfwGetKey('I') == GLFW_PRESS)
+    //    m_FreeCamera.rotate(0.f,0.f,angle);
+    //else if(glfwGetKey('K') == GLFW_PRESS)
+    //    m_FreeCamera.rotate(0.f,0.f,-angle);
 
-    glRotatef(roll ,1.f,0.f,0.f);
-    glRotatef(yaw  ,0.f,1.f,0.f);
-    glRotatef(pitch,0.f,0.f,1.f);
+    //glRotatef(roll ,1.f,0.f,0.f);
+    //glRotatef(yaw  ,0.f,1.f,0.f);
+    //glRotatef(pitch,0.f,0.f,1.f);
 }

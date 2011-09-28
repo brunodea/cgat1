@@ -84,6 +84,7 @@
     <ClInclude Include="..\include\math\matrix_functions.hpp" />
     <ClInclude Include="..\include\math\Vector.hpp" />
     <ClInclude Include="..\include\util\HeightMap.h" />
+    <ClInclude Include="..\include\util\QuadNode.hpp" />
     <ClInclude Include="..\include\util\QuadTree.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

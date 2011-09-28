@@ -7,4 +7,6 @@
 #define CONTROLLER Controller::instance()
 #define PI 3.141592653589
 
+#define MAX_ALT 300.f
+
 #endif
