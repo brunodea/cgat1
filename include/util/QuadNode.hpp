@@ -14,7 +14,7 @@ namespace util
             NW = 0,
             NE,
             SE,
-            SW
+            SW,
         }; //end of enum DIR.
         enum NEIGHBOR
         {
@@ -23,6 +23,13 @@ namespace util
             LEFT,
             LEFT_BOTTOM
         }; //end of enum NEIGHBOR.
+        enum RES //resolutions
+        {
+            R1 = 0,
+            R2,
+            R3,
+            R4
+        };
     public:
         QuadNode() : m_Height(0) { init(); }
 
@@ -68,9 +75,11 @@ namespace util
         QuadNode *neighborLeft() { return m_Neighbors[LEFT]; }
         QuadNode *neighborLeftBottom() { return m_Neighbors[LEFT_BOTTOM]; }
 
+        int resolution(RES r) { return m_Resolutions[r]; }
+        void setResolution(int val, RES r) { m_Resolutions[r] = val; }
+
         void setHeight(int height) { m_Height = height; }
         int height() { return m_Height; }
-
     private:
         void init()
         {
@@ -79,12 +88,14 @@ namespace util
                 m_Children[i] = 0;
                 m_VerticesCorners[i] = math::vector3f(0,0,0);
                 m_Neighbors[i] = 0;
+                m_Resolutions[i] = 0;
             }
         }
     private:
         QuadNode *m_Children[4];
         math::Vector3 m_VerticesCorners[4];
         QuadNode *m_Neighbors[4];
+        int m_Resolutions[4];
         int m_Height;
     };
 } //end of namespace util.

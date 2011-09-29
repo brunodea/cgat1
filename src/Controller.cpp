@@ -10,9 +10,9 @@ Controller *Controller::m_sInstance = NULL;
 
 Controller::Controller()
     : m_bRunning(true),
-      m_FreeCamera(math::vector3f(0,400,400),math::vector3f(600,0,0),math::vector3f(0,1,0))
+      m_FreeCamera(math::vector3f(0,0,400),math::vector3f(0,0,0),math::vector3f(0,1,0))
 {
-    m_HeightMap = new util::HeightMap("resources/black.tga",MAX_ALT);
+    m_HeightMap = new util::HeightMap("resources/sky.tga",MAX_ALT);
     m_HeightMap->setOffsets(30,30);
     m_QuadTree = new util::QuadTree(m_HeightMap->vertices(), m_HeightMap->rows(), m_HeightMap->cols());
     m_FreeCamera.setSpeed(20.f);
@@ -72,7 +72,7 @@ void Controller::onRender()
     gluLookAt(eye[0],eye[1],eye[2], target[0],target[1],target[2], up[0],up[1],up[2]);
 
     //m_HeightMap->draw(30,30);
-    m_QuadTree->draw();
+    m_QuadTree->draw(eye);
 }
 
 
@@ -91,9 +91,15 @@ void Controller::onKeyPressed(int key, int state)
 	if(state == GLFW_PRESS)
 	{
 		if(key == 'C')
-			m_HeightMap->detailUp();
+        {
+            m_QuadTree->detailUp();
+		//	m_HeightMap->detailUp();
+        }
 		if(key == 'V')
-            m_HeightMap->detailDown();
+        {
+            m_QuadTree->detailDown();
+        //    m_HeightMap->detailDown();
+        }
 	}
 }
 
