@@ -10,7 +10,7 @@ Controller *Controller::m_sInstance = NULL;
 
 Controller::Controller()
     : m_bRunning(true),
-      m_FreeCamera(math::vector3f(300,1500,5000),math::vector3f(300,0,0),math::vector3f(0,1,0))
+      m_FreeCamera(math::vector3f(300,1500,10000),math::vector3f(300,0,0),math::vector3f(0,1,0))
 {
     m_HeightMap = new util::HeightMap("resources/sky.tga",MAX_ALT);
     m_HeightMap->setOffsets(30,30);

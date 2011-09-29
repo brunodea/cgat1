@@ -15,7 +15,7 @@ namespace util
     {
     public:
         QuadTree(std::vector<math::Vector3> *verts_matrix, int rows, int cols)
-            : m_Detail(0), m_bWireframe(true)
+            : m_Detail(3225), m_bWireframe(true)
         {
             m_Root = construct(verts_matrix, 0, rows-1, 0, cols-1, rows, cols);
             m_Height = adjustHeights(m_Root)-1;
@@ -32,20 +32,20 @@ namespace util
 
         void draw(const math::Vector3 &pos)
         {
-            draw(m_Root, pos, m_Root->height(), 8000);
+            draw(m_Root, pos, m_Root->height(), m_Detail);
         }
 
         void detailDown()
         {
-            m_Detail++;
-            if(m_Detail > m_Height)
-                m_Detail = m_Height;
+            m_Detail -= 25;
+            if(m_Detail < 0)
+                m_Detail = 0;
         }
         void detailUp()
         {
-            m_Detail--;
-            if(m_Detail < 0)
-                m_Detail = 0;
+            m_Detail += 25;
+            if(m_Detail > 100000)
+                m_Detail = 100000;
         }
         void toggleWireframe() { m_bWireframe = !m_bWireframe; }
 
@@ -300,90 +300,27 @@ namespace util
                 else
                     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-                glBegin(GL_TRIANGLES);
-                    //float distance = math::distance(center, pos);
+                if(rendernw)
+                {
+                    node->draw(QuadNode::UP_LEFT_TRIANG);
+                    node->draw(QuadNode::LEFT_UP_TRIANG);
+                }
+                if(renderne)
+                {
+                    node->draw(QuadNode::UP_RIGHT_TRIANG);
+                    node->draw(QuadNode::RIGHT_UP_TRIANG);
+                }
+                if(renderse)
+                {
+                    node->draw(QuadNode::RIGHT_BOTTOM_TRIANG);
+                    node->draw(QuadNode::BOTTOM_RIGHT_TRIANG);
+                }
+                if(rendersw)
+                {
+                    node->draw(QuadNode::BOTTOM_LEFT_TRIANG);
+                    node->draw(QuadNode::LEFT_BOTTOM_TRIANG);
+                }
 
-                    //glColor4f(1.0,(hnw[1]+hsw[1]+hse[1])/(MAX_ALT*3),0.0,1.0);
-                    //glVertex3f(hnw[0],hnw[1],hnw[2]);
-                    //glVertex3f(hsw[0],hsw[1],hsw[2]);
-                    //glVertex3f(hse[0],hse[1],hse[2]);
-
-                    //glColor4f(1.0,(hsw[1]+hse[1]+hne[1])/(MAX_ALT*3),0.0,1.0);
-                    //glVertex3f(hse[0],hse[1],hse[2]);
-                    //glVertex3f(hne[0],hne[1],hne[2]);
-                    //glVertex3f(hnw[0],hnw[1],hnw[2]);
-
-                    //glColor4f(1.0,(hnw[1]+hsw[1]+hne[1])/(MAX_ALT*3),0.0,1.0);
-                    //glVertex3f(hsw[0],hsw[1],hsw[2]);
-                    //glVertex3f(hne[0],hne[1],hne[2]);
-                    //glVertex3f(hse[0],hse[1],hse[2]);
-
-
-                    math::Vector3 mu = math::vector3f(std::min(hnw[0],hne[0])+(std::max(hnw[0],hne[0])-(std::min(hne[0],hnw[0])))/2.f, 
-                                                      hnw[1],
-                                                      std::min(hnw[2],hne[2])+(std::max(hnw[2],hne[2])-(std::min(hne[2],hnw[2])))/2.f);
-
-                    math::Vector3 mr = math::vector3f(std::min(hse[0],hne[0])+(std::max(hse[0],hne[0])-(std::min(hne[0],hse[0])))/2.f, 
-                                                      hse[1],
-                                                      std::min(hse[2],hne[2])+(std::max(hse[2],hne[2])-(std::min(hne[2],hse[2])))/2.f);
-
-                    math::Vector3 mb = math::vector3f(std::min(hsw[0],hse[0])+(std::max(hsw[0],hse[0])-(std::min(hse[0],hsw[0])))/2.f, 
-                                                      hsw[1],
-                                                      std::min(hsw[2],hse[2])+(std::max(hsw[2],hse[2])-(std::min(hse[2],hsw[2])))/2.f);
-
-                    math::Vector3 ml = math::vector3f(std::min(hsw[0],hnw[0])+(std::max(hsw[0],hnw[0])-(std::min(hnw[0],hsw[0])))/2.f, 
-                                                      hsw[1],
-                                                      std::min(hsw[2],hnw[2])+(std::max(hsw[2],hnw[2])-(std::min(hnw[2],hsw[2])))/2.f);
-
-                    if(rendernw)
-                    {
-                        glColor4f(1.0,(hnw[1]+center[1]+mu[1])/(MAX_ALT*3),0.0,1.0);
-                        glVertex3f(hnw[0],hnw[1],hnw[2]);
-                        glVertex3f(center[0],center[1],center[2]);
-                        glVertex3f(mu[0],mu[1],mu[2]);
-                        
-                        glColor4f(1.0,(hnw[1]+center[1]+ml[1])/(MAX_ALT*3),0.0,1.0);
-                        glVertex3f(hnw[0],hnw[1],hnw[2]);
-                        glVertex3f(center[0],center[1],center[2]);
-                        glVertex3f(ml[0],ml[1],ml[2]);
-                    }
-                    if(renderne)
-                    {
-                        glColor4f(1.0,(hne[1]+center[1]+mu[1])/(MAX_ALT*3),0.0,1.0);
-                        glVertex3f(hne[0],hne[1],hne[2]);
-                        glVertex3f(center[0],center[1],center[2]);
-                        glVertex3f(mu[0],mu[1],mu[2]);
-                        
-                        glColor4f(1.0,(hne[1]+center[1]+mr[1])/(MAX_ALT*3),0.0,1.0);
-                        glVertex3f(hne[0],hne[1],hne[2]);
-                        glVertex3f(center[0],center[1],center[2]);
-                        glVertex3f(mr[0],mr[1],mr[2]);
-                    }
-                    if(renderse)
-                    {
-                        glColor4f(1.0,(hse[1]+center[1]+mr[1])/(MAX_ALT*3),0.0,1.0);
-                        glVertex3f(hse[0],hse[1],hse[2]);
-                        glVertex3f(center[0],center[1],center[2]);
-                        glVertex3f(mr[0],mr[1],mr[2]);
-                        
-                        glColor4f(1.0,(hse[1]+center[1]+mb[1])/(MAX_ALT*3),0.0,1.0);
-                        glVertex3f(hse[0],hse[1],hse[2]);
-                        glVertex3f(center[0],center[1],center[2]);
-                        glVertex3f(mb[0],mb[1],mb[2]);
-                    }
-                    if(rendersw)
-                    {
-                        glColor4f(1.0,(hsw[1]+center[1]+mb[1])/(MAX_ALT*3),0.0,1.0);
-                        glVertex3f(hsw[0],hsw[1],hsw[2]);
-                        glVertex3f(center[0],center[1],center[2]);
-                        glVertex3f(mb[0],mb[1],mb[2]);
-                        
-                        glColor4f(1.0,(hsw[1]+center[1]+ml[1])/(MAX_ALT*3),0.0,1.0);
-                        glVertex3f(hsw[0],hsw[1],hsw[2]);
-                        glVertex3f(center[0],center[1],center[2]);
-                        glVertex3f(ml[0],ml[1],ml[2]);
-                    }
-                glEnd();
                 return false;
             }
             return true;
