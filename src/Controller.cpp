@@ -10,12 +10,12 @@ Controller *Controller::m_sInstance = NULL;
 
 Controller::Controller()
     : m_bRunning(true),
-      m_FreeCamera(math::vector3f(0,0,400),math::vector3f(0,0,0),math::vector3f(0,1,0))
+      m_FreeCamera(math::vector3f(300,1500,5000),math::vector3f(300,0,0),math::vector3f(0,1,0))
 {
     m_HeightMap = new util::HeightMap("resources/sky.tga",MAX_ALT);
     m_HeightMap->setOffsets(30,30);
     m_QuadTree = new util::QuadTree(m_HeightMap->vertices(), m_HeightMap->rows(), m_HeightMap->cols());
-    m_FreeCamera.setSpeed(20.f);
+    m_FreeCamera.setSpeed(40.f);
 }
 
 Controller::~Controller()
@@ -72,7 +72,7 @@ void Controller::onRender()
     gluLookAt(eye[0],eye[1],eye[2], target[0],target[1],target[2], up[0],up[1],up[2]);
 
     //m_HeightMap->draw(30,30);
-    m_QuadTree->draw(eye);
+    m_QuadTree->draw(math::vector3f(eye[0],0.f,-eye[2]));
 }
 
 
@@ -95,11 +95,13 @@ void Controller::onKeyPressed(int key, int state)
             m_QuadTree->detailUp();
 		//	m_HeightMap->detailUp();
         }
-		if(key == 'V')
+		else if(key == 'V')
         {
             m_QuadTree->detailDown();
         //    m_HeightMap->detailDown();
         }
+        else if(key == 'B')
+            m_QuadTree->toggleWireframe();
 	}
 }
 
