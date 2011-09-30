@@ -41,10 +41,11 @@ namespace util
             BOTTOM_RIGHT_TRIANG,
             BOTTOM_LEFT_TRIANG,
             LEFT_BOTTOM_TRIANG,
-            LEFT_UP_TRIANG
+            LEFT_UP_TRIANG,
+            BASIC
         }; //end of enum TRING.
     public:
-        QuadNode() : m_Height(0) { init(); }
+        QuadNode() : m_Height(0), m_TriangsToDraw() { init(); }
 
         void setChild(QuadNode *child, DIR d) { m_Children[d] = child; }
         void setChildren(QuadNode *nw, QuadNode *ne, QuadNode *se, QuadNode *sw)
@@ -94,7 +95,7 @@ namespace util
         void setHeight(int height) { m_Height = height; }
         int height() { return m_Height; }
         
-        void draw(TRIANG tr)
+        math::Vector3 verticeCenter()
         {
             math::Vector3 hnw = verticeNW();
             math::Vector3 hne = verticeNE();
@@ -104,21 +105,58 @@ namespace util
             math::Vector3 center = math::vector3f(std::min(hnw[0],hne[0])+(std::max(hnw[0],hne[0])-(std::min(hne[0],hnw[0])))/2.f, 
                                                     hnw[1],
                                                     std::min(hnw[2],hse[2])+(std::max(hnw[2],hse[2])-(std::min(hse[2],hnw[2])))/2.f);
-            math::Vector3 mu = math::vector3f(std::min(hnw[0],hne[0])+(std::max(hnw[0],hne[0])-(std::min(hne[0],hnw[0])))/2.f, 
-                                                      hnw[1],
-                                                      std::min(hnw[2],hne[2])+(std::max(hnw[2],hne[2])-(std::min(hne[2],hnw[2])))/2.f);
+            return center;
+        }
 
-            math::Vector3 mr = math::vector3f(std::min(hse[0],hne[0])+(std::max(hse[0],hne[0])-(std::min(hne[0],hse[0])))/2.f, 
-                                                hse[1],
-                                                std::min(hse[2],hne[2])+(std::max(hse[2],hne[2])-(std::min(hne[2],hse[2])))/2.f);
+        math::Vector3 verticeMiddleUp()
+        {
+            math::Vector3 hnw = verticeNW();
+            math::Vector3 hne = verticeNE();
+            return math::vector3f(std::min(hnw[0],hne[0])+(std::max(hnw[0],hne[0])-(std::min(hne[0],hnw[0])))/2.f, 
+                           hnw[1],
+                           std::min(hnw[2],hne[2])+(std::max(hnw[2],hne[2])-(std::min(hne[2],hnw[2])))/2.f);
+        }
 
-            math::Vector3 mb = math::vector3f(std::min(hsw[0],hse[0])+(std::max(hsw[0],hse[0])-(std::min(hse[0],hsw[0])))/2.f, 
+        math::Vector3 verticeMiddleRight()
+        {
+            math::Vector3 hne = verticeNE();
+            math::Vector3 hse = verticeSE();
+            return math::vector3f(std::min(hse[0],hne[0])+(std::max(hse[0],hne[0])-(std::min(hne[0],hse[0])))/2.f, 
+                                  hse[1],
+                                  std::min(hse[2],hne[2])+(std::max(hse[2],hne[2])-(std::min(hne[2],hse[2])))/2.f);
+        }
+
+        math::Vector3 verticeMiddleBottom()
+        {
+            math::Vector3 hse = verticeSE();
+            math::Vector3 hsw = verticeSW();
+            return math::vector3f(std::min(hsw[0],hse[0])+(std::max(hsw[0],hse[0])-(std::min(hse[0],hsw[0])))/2.f, 
                                                 hsw[1],
                                                 std::min(hsw[2],hse[2])+(std::max(hsw[2],hse[2])-(std::min(hse[2],hsw[2])))/2.f);
+        }
 
-            math::Vector3 ml = math::vector3f(std::min(hsw[0],hnw[0])+(std::max(hsw[0],hnw[0])-(std::min(hnw[0],hsw[0])))/2.f, 
-                                                hsw[1],
-                                                std::min(hsw[2],hnw[2])+(std::max(hsw[2],hnw[2])-(std::min(hnw[2],hsw[2])))/2.f);
+        math::Vector3 verticeMiddleLeft()
+        {
+            math::Vector3 hnw = verticeNW();
+            math::Vector3 hsw = verticeSW();
+            return math::vector3f(std::min(hsw[0],hnw[0])+(std::max(hsw[0],hnw[0])-(std::min(hnw[0],hsw[0])))/2.f, 
+                                  hsw[1],
+                                  std::min(hsw[2],hnw[2])+(std::max(hsw[2],hnw[2])-(std::min(hnw[2],hsw[2])))/2.f);
+        }
+
+        void draw(TRIANG tr)
+        {
+            math::Vector3 hnw = verticeNW();
+            math::Vector3 hne = verticeNE();
+            math::Vector3 hse = verticeSE();
+            math::Vector3 hsw = verticeSW();
+
+            math::Vector3 center = verticeCenter();
+            math::Vector3 mu = verticeMiddleUp();
+            math::Vector3 mr = verticeMiddleRight();
+            math::Vector3 mb = verticeMiddleBottom();
+            math::Vector3 ml = verticeMiddleLeft();
+
             glBegin(GL_TRIANGLES);
                 switch(tr)
                 {
@@ -170,11 +208,26 @@ namespace util
                     glVertex3f(center[0],center[1],center[2]);
                     glVertex3f(ml[0],ml[1],ml[2]);
                     break;
+                case BASIC:
+                    glColor4f(1.0,(hnw[1]+hsw[1]+hne[1])/(MAX_ALT*3),0.0,1.0);
+                    glVertex3f(hnw[0],hnw[1],hnw[2]);
+                    glVertex3f(hsw[0],hsw[1],hsw[2]);
+                    glVertex3f(hne[0],hne[1],hne[2]);
+                    
+                    glColor4f(1.0,(hsw[1]+hse[1]+hne[1])/(MAX_ALT*3),0.0,1.0);
+                    glVertex3f(hsw[0],hsw[1],hsw[2]);
+                    glVertex3f(hse[0],hse[1],hse[2]);
+                    glVertex3f(hne[0],hne[1],hne[2]);
+                    
+                    glColor4f(1.0,(hse[1]+hne[1]+hnw[1])/(MAX_ALT*3),0.0,1.0);
+                    glVertex3f(hse[0],hse[1],hse[2]);
+                    glVertex3f(hne[0],hne[1],hne[2]);
+                    glVertex3f(hnw[0],hnw[1],hnw[2]);
                 default: break;
                 }
             glEnd();
         }
-
+        
     private:
         void init()
         {
@@ -192,6 +245,7 @@ namespace util
         QuadNode *m_Neighbors[4];
         int m_Resolutions[4];
         int m_Height;
+        std::vector<TRIANG> m_TriangsToDraw;
     };
 } //end of namespace util.
 #endif

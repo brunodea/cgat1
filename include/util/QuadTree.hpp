@@ -252,11 +252,6 @@ namespace util
             math::Vector3 hse = node->verticeSE();
             math::Vector3 hsw = node->verticeSW();
 
-            math::Vector3 center = math::vector3f(std::min(hnw[0],hne[0])+(std::max(hnw[0],hne[0])-(std::min(hne[0],hnw[0])))/2.f, 
-                                                    hnw[1],
-                                                    std::min(hnw[2],hse[2])+(std::max(hnw[2],hse[2])-(std::min(hse[2],hnw[2])))/2.f);
-                //std::cout << distance << std::endl;
-                //std::cout << node->height() << " " << m_Height << std::endl;
             bool rendernw = true;
             bool renderne = true;
             bool renderse = true;
@@ -293,37 +288,32 @@ namespace util
                         rendersw = draw(sw, pos, sw->height(), min_dist*c);
                 }
             }
-            if(node->height() == detail)
+            if(m_bWireframe == true)
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            else
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            
+            if(rendernw)
             {
-                if(m_bWireframe == true)
-                    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-                else
-                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-                if(rendernw)
-                {
-                    node->draw(QuadNode::UP_LEFT_TRIANG);
-                    node->draw(QuadNode::LEFT_UP_TRIANG);
-                }
-                if(renderne)
-                {
-                    node->draw(QuadNode::UP_RIGHT_TRIANG);
-                    node->draw(QuadNode::RIGHT_UP_TRIANG);
-                }
-                if(renderse)
-                {
-                    node->draw(QuadNode::RIGHT_BOTTOM_TRIANG);
-                    node->draw(QuadNode::BOTTOM_RIGHT_TRIANG);
-                }
-                if(rendersw)
-                {
-                    node->draw(QuadNode::BOTTOM_LEFT_TRIANG);
-                    node->draw(QuadNode::LEFT_BOTTOM_TRIANG);
-                }
-
-                return false;
+                node->draw(QuadNode::UP_LEFT_TRIANG);
+                node->draw(QuadNode::LEFT_UP_TRIANG);
             }
-            return true;
+            if(renderne)
+            {
+                node->draw(QuadNode::UP_RIGHT_TRIANG);
+                node->draw(QuadNode::RIGHT_UP_TRIANG);
+            }
+            if(renderse)
+            {
+                node->draw(QuadNode::RIGHT_BOTTOM_TRIANG);
+                node->draw(QuadNode::BOTTOM_RIGHT_TRIANG);
+            }
+            if(rendersw)
+            {
+                node->draw(QuadNode::BOTTOM_LEFT_TRIANG);
+                node->draw(QuadNode::LEFT_BOTTOM_TRIANG);
+            }
+            return false;
         }
 
         void clear(QuadNode *node)
